@@ -8,6 +8,8 @@ def get_cats_url():
                             headers={'User-agent': 'your bot 0.1'}).json()
     newcontents = str(contents)
     pattern = r'(?<=url_overridden_by_dest\': ).*'
+    #Matches everything ahead of url_overridden_by_dest, which contains our .jpg file.
+    #Continue to trim away bits until we are left with just the link to the .jpg.
     match = re.search(pattern, newcontents)
     newstr = match.group(0)
     pattern1 = r'\'(.*?)\''
@@ -15,6 +17,7 @@ def get_cats_url():
     almost_url = match1.group(0)
     url = almost_url.replace("'", '')
     url = str(url)
+    #URL with final link to .jpg file is finally extracted from the json.
     return url
 
 def get_rabbits_url():
@@ -34,6 +37,7 @@ def get_rabbits_url():
 def get_mtg_url():
     contents = requests.get('https://api.scryfall.com/cards/random').json()
     url = contents['image_uris']['large']
+    #Extracting the image url by indexing the json dictionary.
     return url
 
 def get_dog_url():
@@ -50,6 +54,7 @@ def get_dog_image_url():
     return url
 
 def get_rabbit_image_url():
+    #Function that excludes gifs and videos. 
     allowed_extension = ['jpg', 'jpeg', 'png']
     file_extension = ''
     while file_extension not in allowed_extension:
@@ -65,6 +70,7 @@ def get_cat_image_url():
         file_extension = re.search("([^.]*)$", url).group(1).lower()
     return url
 
+#Functions below allow the images to be called using the telegram bot by typing in the appropriate commands. 
 
 @run_async
 def bop(update, context):
